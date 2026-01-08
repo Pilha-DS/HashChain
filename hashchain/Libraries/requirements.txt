@@ -1,0 +1,11 @@
+# HashChain - Dependências Externas
+# Instale com: pip install -r requirements.txt
+
+# Interface Gráfica (GUI) - Opcional para interface gráfica
+# Nota: tkinter (biblioteca padrão) também é necessária, mas vem com Python
+customtkinter>=5.2.0
+
+# Interface Web - Opcional, necessária apenas para interface web
+# Se não for usar a interface web, esta dependência pode ser ignorada
+flask>=2.3.0
+

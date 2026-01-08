@@ -99,7 +99,8 @@ def main():
                 print(f'\n{bold}Escolha uma ação:{r}\n')
                 action_list = [
                     'Criptografar Texto', 'Descriptografar Texto',
-                    'Comprimir Texto', 'Descomprimir Texto', 'Ajuda', 'Sair'
+                    'Comprimir Texto', 'Descomprimir Texto', 
+                    'Interface Web', 'Ajuda', 'Sair'
                 ]
                 Handler.print_menu(action_list)
                 
@@ -107,7 +108,7 @@ def main():
                               f"{r}{color.format(faint=True)} ").strip()
                 check_action(action)
                 
-                if action not in ["1", "2", "3", "4", "5", "6"]:
+                if action not in ["1", "2", "3", "4", "5", "6", "7"]:
                     print(f"\n{r}{color.c('y')}Ação inválida. Tente novamente.{r}")
                     continue
                 
@@ -129,12 +130,16 @@ def main():
                     case 4:
                         handle_decompress()
                     
-                    # Ajuda
+                    # Interface Web
                     case 5:
+                        handle_web_interface()
+                    
+                    # Ajuda
+                    case 6:
                         handle_help()
                     
                     # Sair
-                    case 6:
+                    case 7:
                         close_program()
                     
                     case _:
@@ -648,6 +653,76 @@ def handle_decompress():
     resultado = hashchain.decompression(texto)
     if resultado is not None and not resultado.startswith("Erro"):
         print(f'{r}{color.format(faint=True)}{resultado}{r}')
+
+
+def handle_web_interface():
+    """Inicia a interface web."""
+    # Verifica se Flask está disponível antes de continuar
+    try:
+        from hashchain.interfaces.web import FLASK_AVAILABLE, run_web
+        
+        if not FLASK_AVAILABLE:
+            print(f"\n{r}{color.c('r')}Erro: Flask não está instalado!{r}")
+            print(f"{r}{color.c('y')}Instale com: pip install Flask{r}")
+            print(f"{r}{color.format(faint=True)}Voltando ao menu principal...{r}\n")
+            return
+    except ImportError as e:
+        print(f"\n{r}{color.c('r')}Erro: Flask não está instalado!{r}")
+        print(f"{r}{color.c('y')}Instale com: pip install Flask{r}")
+        print(f"{r}{color.format(faint=True)}Voltando ao menu principal...{r}\n")
+        return
+    
+    print(f"\n{r}{color.c('c', True)}Iniciando interface web...{r}")
+    print(f"{r}{color.format(faint=True)}A interface web será aberta no seu navegador.{r}")
+    print(f"{r}{color.format(faint=True)}Pressione Ctrl+C no terminal para parar o servidor.{r}\n")
+    
+    # Pergunta sobre host e porta
+    while Stable:
+        host_input = input(
+            f"{r}{color.c('c', True)}Digite o host (Enter para 127.0.0.1):{r} "
+        ).strip()
+        
+        check_action(host_input)
+        
+        if not host_input:
+            host = '127.0.0.1'
+            break
+        else:
+            host = host_input
+            break
+    
+    while Stable:
+        port_input = input(
+            f"{r}{color.c('c', True)}Digite a porta (Enter para 5000):{r} "
+        ).strip()
+        
+        check_action(port_input)
+        
+        if not port_input:
+            port = 5000
+            break
+        else:
+            try:
+                port = int(port_input)
+                if port < 1 or port > 65535:
+                    print(f"\n{r}{color.c('y')}Porta inválida. Use um número entre 1 e 65535.{r}")
+                    continue
+                break
+            except ValueError:
+                print(f"\n{r}{color.c('y')}Porta inválida. Digite um número.{r}")
+                continue
+    
+    # Inicia o servidor web
+    try:
+        run_web(host=host, port=port, debug=False)
+        # Após fechar o servidor, volta ao menu
+        print(f"\n{r}{color.format(faint=True)}Voltando ao menu principal...{r}\n")
+    except KeyboardInterrupt:
+        print(f"\n{r}{color.format(faint=True)}Servidor web interrompido.{r}")
+        print(f"{r}{color.format(faint=True)}Voltando ao menu principal...{r}\n")
+    except Exception as e:
+        print(f"\n{r}{color.c('r')}Erro ao iniciar interface web: {e}{r}")
+        print(f"{r}{color.format(faint=True)}Voltando ao menu principal...{r}\n")
 
 
 def handle_help():

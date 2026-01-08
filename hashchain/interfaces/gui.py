@@ -156,12 +156,10 @@ def interface_criptografar():
     passo_entry = ctk.CTkEntry(content_frame, textvariable=passo_var)
     passo_entry.pack(padx=20, fill="x")
 
-    has_salt_var = ctk.IntVar(value=0)
-
     check_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
     check_frame.pack(pady=10)
 
-    has_salt_var = ctk.IntVar(value=0)
+    has_salt_var = ctk.IntVar(value=1)  # Marcado por padrão (usa salt)
     ctk.CTkCheckBox(
         check_frame, text="Utilizar Salt", variable=has_salt_var, onvalue=1, offvalue=0
     ).pack(side="left", padx=10)

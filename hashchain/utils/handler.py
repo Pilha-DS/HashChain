@@ -27,6 +27,33 @@ class Handler:
         else:
             os.system('clear')
     
+    @staticmethod
+    def find_requirements_file() -> Optional[Path]:
+        """
+        Procura o arquivo requirements.txt dinamicamente.
+        Procura a partir do diretório atual e sobe na hierarquia até encontrar.
+        
+        Returns:
+            Path do arquivo requirements.txt ou None se não encontrado
+        """
+        # Começa do diretório atual
+        current_path = Path.cwd()
+        
+        # Procura no diretório atual e sobe até a raiz
+        for path in [current_path] + list(current_path.parents):
+            requirements_file = path / 'requirements.txt'
+            if requirements_file.exists() and requirements_file.is_file():
+                return requirements_file.resolve()
+        
+        # Se não encontrou, tenta procurar a partir do arquivo atual
+        file_path = Path(__file__)
+        for path in [file_path.parent] + list(file_path.parents):
+            requirements_file = path / 'requirements.txt'
+            if requirements_file.exists() and requirements_file.is_file():
+                return requirements_file.resolve()
+        
+        return None
+    
     def find_config_file(self) -> Optional[Path]:
         """
         Procura arquivo de configuração no diretório atual e subdiretórios.
@@ -106,19 +133,31 @@ class Handler:
         """
         dependencies = [
             "tkinter", "customtkinter", "os", "json", "secrets",
-            "pathlib", "datetime", "subprocess"
+            "pathlib", "datetime", "subprocess", "flask"
         ]
         color = ColorFormatter()
         
+        # Conta quantas bibliotecas estão faltando
+        missing_modules = []
         for module in dependencies:
             if importlib.util.find_spec(module) is not None:
                 print(f"{color.c('g')}Atualmente o módulo {color.BOLD}{module}{color.RESET}{color.c('g')} está instalado.{color.RESET}")
             else:
+                missing_modules.append(module)
                 print(
                     f"{color.c('r')}Atualmente o módulo {color.c('r', bold=True)}{module} não está instalado"
                     f"{color.c('r')}, rode o seguinte comando no terminal para instalar:"
-                    f" pip install {color.BOLD}{module}{color.RESET}"
+                    f"\n pip install {color.BOLD}{module}{color.RESET}"
                 )
+        
+        # Mostra mensagem sobre requirements.txt apenas se houver mais de uma biblioteca faltando
+        if len(missing_modules) > 1:
+            # Procura o arquivo requirements.txt dinamicamente
+            requirements_path = Handler.find_requirements_file()
+            if requirements_path:
+                print(f"{color.c('r')}\nou então instale todas as dependências:\n pip install -r {requirements_path}{color.RESET}")
+            else:
+                print(f"{color.c('r')}\nou então instale todas as dependências:\n pip install -r requirements.txt{color.RESET}")
         
         has_dependencies = all(
             importlib.util.find_spec(module) is not None for module in dependencies

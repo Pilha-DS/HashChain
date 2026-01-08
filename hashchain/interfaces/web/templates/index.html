@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashChain - Sistema de Criptografia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #001f3f 0%, #003366 100%);
+            color: #f2f2f2;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .authors {
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: #004080;
+            border: none;
+            color: #f2f2f2;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .tab-button:hover {
+            background: #0050a0;
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: #0066cc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(0, 51, 102, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        textarea, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            background: #003366;
+            border: 2px solid #004080;
+            border-radius: 5px;
+            color: #f2f2f2;
+            font-size: 1em;
+            font-family: 'Consolas', monospace;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #0066cc;
+            border: none;
+            color: #f2f2f2;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #0077dd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: #555;
+        }
+
+        button.secondary:hover {
+            background: #666;
+        }
+
+        button.success {
+            background: #28a745;
+        }
+
+        button.success:hover {
+            background: #34ce57;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .result-box h3 {
+            margin-bottom: 10px;
+            color: #66b3ff;
+        }
+
+        .result-text {
+            background: #001a33;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.3);
+            border-left: 4px solid #dc3545;
+            color: #ff6b7a;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.3);
+            border-left: 4px solid #28a745;
+            color: #6cff8d;
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #f2f2f2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .copy-button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #555;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 HashChain Encryption</h1>
+            <p class="subtitle">Sistema de Criptografia por Cadeias de Substituição</p>
+            <p class="authors">
+                Feito por: Jonathan S. Cardoso, Gabriel M. Tonioli,<br>
+                Gabriel P. Câmara, Vinicius A. Manini
+            </p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('encrypt')">Criptografar</button>
+            <button class="tab-button" onclick="showTab('decrypt')">Descriptografar</button>
+            <button class="tab-button" onclick="showTab('compress')">Comprimir</button>
+            <button class="tab-button" onclick="showTab('decompress')">Descomprimir</button>
+        </div>
+
+        <!-- Tab Criptografar -->
+        <div id="encrypt" class="tab-content active">
+            <h2>Criptografar Texto</h2>
+            <div id="encrypt-alert"></div>
+            
+            <div class="form-group">
+                <label for="encrypt-text">Texto para criptografar:</label>
+                <textarea id="encrypt-text" placeholder="Digite o texto a ser criptografado..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="encrypt-seed">Seed (Opcional):</label>
+                <div class="button-group">
+                    <input type="text" id="encrypt-seed" placeholder="Deixe vazio para gerar automaticamente">
+                    <button onclick="generateSeed('encrypt-seed')">Gerar Seed</button>
+                </div>
+                <p class="info-text">Número inteiro de no mínimo 8 dígitos</p>
+            </div>
+
+            <div class="form-group">
+                <label for="encrypt-passes">Passes (Opcional):</label>
+                <div class="button-group">
+                    <input type="text" id="encrypt-passes" placeholder="Ex: 20 84 341 999 (deixe vazio para gerar automaticamente)">
+                    <button onclick="generatePasses('encrypt-passes')">Gerar Passes</button>
+                </div>
+                <p class="info-text">Inteiros de 20 a 999 separados por espaços</p>
+            </div>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="encrypt-no-salt" checked>
+                    <span>Usar Salt (recomendado)</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button onclick="encryptText()" class="success">Criptografar</button>
+                <button onclick="clearEncrypt()" class="secondary">Limpar</button>
+            </div>
+
+            <div id="encrypt-result"></div>
+            <div class="loading" id="encrypt-loading">
+                <div class="spinner"></div>
+                <p>Processando...</p>
+            </div>
+        </div>
+
+        <!-- Tab Descriptografar -->
+        <div id="decrypt" class="tab-content">
+            <h2>Descriptografar Texto</h2>
+            <div id="decrypt-alert"></div>
+            
+            <div class="form-group">
+                <label for="decrypt-text">Texto criptografado:</label>
+                <textarea id="decrypt-text" placeholder="Cole o texto criptografado aqui..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="decrypt-key">Chave de descriptografia:</label>
+                <textarea id="decrypt-key" placeholder="Cole a chave aqui..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="decryptText()" class="success">Descriptografar</button>
+                <button onclick="clearDecrypt()" class="secondary">Limpar</button>
+            </div>
+
+            <div id="decrypt-result"></div>
+            <div class="loading" id="decrypt-loading">
+                <div class="spinner"></div>
+                <p>Processando...</p>
+            </div>
+        </div>
+
+        <!-- Tab Comprimir -->
+        <div id="compress" class="tab-content">
+            <h2>Comprimir Texto Binário</h2>
+            <div id="compress-alert"></div>
+            
+            <div class="form-group">
+                <label for="compress-text">Texto binário (apenas 0 e 1):</label>
+                <textarea id="compress-text" placeholder="Digite o texto binário a ser comprimido..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="compressText()" class="success">Comprimir</button>
+                <button onclick="clearCompress()" class="secondary">Limpar</button>
+            </div>
+
+            <div id="compress-result"></div>
+            <div class="loading" id="compress-loading">
+                <div class="spinner"></div>
+                <p>Processando...</p>
+            </div>
+        </div>
+
+        <!-- Tab Descomprimir -->
+        <div id="decompress" class="tab-content">
+            <h2>Descomprimir Texto</h2>
+            <div id="decompress-alert"></div>
+            
+            <div class="form-group">
+                <label for="decompress-text">Texto comprimido:</label>
+                <textarea id="decompress-text" placeholder="Digite o texto comprimido..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="decompressText()" class="success">Descomprimir</button>
+                <button onclick="clearDecompress()" class="secondary">Limpar</button>
+            </div>
+
+            <div id="decompress-result"></div>
+            <div class="loading" id="decompress-loading">
+                <div class="spinner"></div>
+                <p>Processando...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showTab(tabName) {
+            // Esconde todas as tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Mostra a tab selecionada
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copiado para a área de transferência!');
+            });
+        }
+
+        async function generateSeed(inputId) {
+            try {
+                const response = await fetch('/api/generate-seed');
+                const data = await response.json();
+                document.getElementById(inputId).value = data.seed;
+            } catch (error) {
+                showAlert('encrypt-alert', 'Erro ao gerar seed: ' + error.message, 'error');
+            }
+        }
+
+        async function generatePasses(inputId) {
+            try {
+                const response = await fetch('/api/generate-passes');
+                const data = await response.json();
+                document.getElementById(inputId).value = data.passes.join(' ');
+            } catch (error) {
+                showAlert('encrypt-alert', 'Erro ao gerar passes: ' + error.message, 'error');
+            }
+        }
+
+        async function encryptText() {
+            const plaintext = document.getElementById('encrypt-text').value;
+            const seed = document.getElementById('encrypt-seed').value;
+            const passes = document.getElementById('encrypt-passes').value;
+            const noSalt = !document.getElementById('encrypt-no-salt').checked;
+
+            if (!plaintext) {
+                showAlert('encrypt-alert', 'Digite um texto para criptografar', 'error');
+                return;
+            }
+
+            document.getElementById('encrypt-loading').style.display = 'block';
+            document.getElementById('encrypt-result').innerHTML = '';
+
+            try {
+                const response = await fetch('/api/encrypt', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        plaintext: plaintext,
+                        seed: seed || 0,
+                        passes: passes || null,
+                        no_salt: noSalt
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showAlert('encrypt-alert', data.error, 'error');
+                } else {
+                    document.getElementById('encrypt-result').innerHTML = `
+                        <div class="result-box">
+                            <h3>Texto Criptografado:</h3>
+                            <div class="result-text">${data.ciphertext}</div>
+                            <button class="copy-button" onclick="copyToClipboard('${data.ciphertext.replace(/'/g, "\\'")}')">Copiar</button>
+                        </div>
+                        <div class="result-box">
+                            <h3>Chave de Descriptografia:</h3>
+                            <div class="result-text">${data.key}</div>
+                            <button class="copy-button" onclick="copyToClipboard('${data.key.replace(/'/g, "\\'")}')">Copiar</button>
+                        </div>
+                    `;
+                    showAlert('encrypt-alert', 'Criptografia realizada com sucesso!', 'success');
+                }
+            } catch (error) {
+                showAlert('encrypt-alert', 'Erro: ' + error.message, 'error');
+            } finally {
+                document.getElementById('encrypt-loading').style.display = 'none';
+            }
+        }
+
+        async function decryptText() {
+            const ciphertext = document.getElementById('decrypt-text').value;
+            const key = document.getElementById('decrypt-key').value;
+
+            if (!ciphertext || !key) {
+                showAlert('decrypt-alert', 'Preencha o texto criptografado e a chave', 'error');
+                return;
+            }
+
+            document.getElementById('decrypt-loading').style.display = 'block';
+            document.getElementById('decrypt-result').innerHTML = '';
+
+            try {
+                const response = await fetch('/api/decrypt', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        ciphertext: ciphertext,
+                        key: key
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showAlert('decrypt-alert', data.error, 'error');
+                } else {
+                    document.getElementById('decrypt-result').innerHTML = `
+                        <div class="result-box">
+                            <h3>Texto Descriptografado:</h3>
+                            <div class="result-text" id="decrypt-plaintext">${escapeHtml(data.plaintext)}</div>
+                            <button class="copy-button" onclick="copyToClipboard(document.getElementById('decrypt-plaintext').textContent)">Copiar</button>
+                        </div>
+                    `;
+                    showAlert('decrypt-alert', 'Descriptografia realizada com sucesso!', 'success');
+                }
+            } catch (error) {
+                showAlert('decrypt-alert', 'Erro: ' + error.message, 'error');
+            } finally {
+                document.getElementById('decrypt-loading').style.display = 'none';
+            }
+        }
+
+        async function compressText() {
+            const text = document.getElementById('compress-text').value;
+
+            if (!text) {
+                showAlert('compress-alert', 'Digite um texto para comprimir', 'error');
+                return;
+            }
+
+            document.getElementById('compress-loading').style.display = 'block';
+            document.getElementById('compress-result').innerHTML = '';
+
+            try {
+                const response = await fetch('/api/compress', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: text})
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showAlert('compress-alert', data.error, 'error');
+                } else {
+                    document.getElementById('compress-result').innerHTML = `
+                        <div class="result-box">
+                            <h3>Texto Comprimido:</h3>
+                            <div class="result-text" id="compress-result-text">${escapeHtml(data.compressed)}</div>
+                            <button class="copy-button" onclick="copyToClipboard(document.getElementById('compress-result-text').textContent)">Copiar</button>
+                        </div>
+                    `;
+                    showAlert('compress-alert', 'Compressão realizada com sucesso!', 'success');
+                }
+            } catch (error) {
+                showAlert('compress-alert', 'Erro: ' + error.message, 'error');
+            } finally {
+                document.getElementById('compress-loading').style.display = 'none';
+            }
+        }
+
+        async function decompressText() {
+            const compressedText = document.getElementById('decompress-text').value;
+
+            if (!compressedText) {
+                showAlert('decompress-alert', 'Digite um texto para descomprimir', 'error');
+                return;
+            }
+
+            document.getElementById('decompress-loading').style.display = 'block';
+            document.getElementById('decompress-result').innerHTML = '';
+
+            try {
+                const response = await fetch('/api/decompress', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({compressed_text: compressedText})
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showAlert('decompress-alert', data.error, 'error');
+                } else {
+                    document.getElementById('decompress-result').innerHTML = `
+                        <div class="result-box">
+                            <h3>Texto Descomprimido:</h3>
+                            <div class="result-text" id="decompress-result-text">${escapeHtml(data.decompressed)}</div>
+                            <button class="copy-button" onclick="copyToClipboard(document.getElementById('decompress-result-text').textContent)">Copiar</button>
+                        </div>
+                    `;
+                    showAlert('decompress-alert', 'Descompressão realizada com sucesso!', 'success');
+                }
+            } catch (error) {
+                showAlert('decompress-alert', 'Erro: ' + error.message, 'error');
+            } finally {
+                document.getElementById('decompress-loading').style.display = 'none';
+            }
+        }
+
+        function clearEncrypt() {
+            document.getElementById('encrypt-text').value = '';
+            document.getElementById('encrypt-seed').value = '';
+            document.getElementById('encrypt-passes').value = '';
+            document.getElementById('encrypt-no-salt').checked = true;
+            document.getElementById('encrypt-result').innerHTML = '';
+            document.getElementById('encrypt-alert').innerHTML = '';
+        }
+
+        function clearDecrypt() {
+            document.getElementById('decrypt-text').value = '';
+            document.getElementById('decrypt-key').value = '';
+            document.getElementById('decrypt-result').innerHTML = '';
+            document.getElementById('decrypt-alert').innerHTML = '';
+        }
+
+        function clearCompress() {
+            document.getElementById('compress-text').value = '';
+            document.getElementById('compress-result').innerHTML = '';
+            document.getElementById('compress-alert').innerHTML = '';
+        }
+
+        function clearDecompress() {
+            document.getElementById('decompress-text').value = '';
+            document.getElementById('decompress-result').innerHTML = '';
+            document.getElementById('decompress-alert').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
+
