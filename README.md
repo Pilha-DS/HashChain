@@ -1,11 +1,8 @@
-<img src="https://img.shields.io/badge/Python-3.8+-blue.svg">
-<img src="https://img.shields.io/badge/License-MIT-green.svg">
-
 # HashChain Encryption (HCC)
 
-HashChain é um esquema de criptografia por cadeias de substituição determinísticas com inserção opcional de salt, implementado em Python. Ele gera tabelas de substituição por passe a partir de uma seed principal e permite reverter o processo com uma chave compacta que embute toda a informação necessária para a descriptografia.
+HashChain é um esquema de criptografia por cadeias de substituição determinísticas com inserção opcional de salt, implementado em Python. Gera tabelas de substituição por passe a partir de uma seed principal e permite reverter o processo com uma chave compacta que contém toda a informação necessária para a descriptografia.
 
-## 📋 Sumário
+## Sumário
 
 - [Visão Geral](#visão-geral)
 - [Características](#características)
@@ -13,10 +10,6 @@ HashChain é um esquema de criptografia por cadeias de substituição determiní
 - [Instalação](#instalação)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Uso](#uso)
-  - [Interface de Linha de Comando (CLI)](#interface-de-linha-de-comando-cli)
-  - [Interface Gráfica (GUI)](#interface-gráfica-gui)
-  - [Interface Web](#interface-web)
-  - [Uso Programático](#uso-programático)
 - [Conceitos-Chave](#conceitos-chave)
 - [API Completa](#api-completa)
 - [Formato da Chave](#formato-da-chave)
@@ -26,37 +19,37 @@ HashChain é um esquema de criptografia por cadeias de substituição determiní
 - [Contribuindo](#contribuindo)
 - [Licença](#licença)
 
-## 🎯 Visão Geral
+## Visão Geral
 
-HashChain Encryption é um sistema de criptografia que utiliza:
+HashChain Encryption utiliza:
 
-- **Substituição determinística:** Para cada caractere do texto plano, é aplicada uma substituição conforme tabelas geradas a partir de uma seed e dos passes.
+- **Substituição determinística:** Cada caractere do texto plano é substituído conforme tabelas geradas a partir de uma seed e dos passes.
 - **Múltiplos passes:** O texto é segmentado por uma sequência de comprimentos (passes). Cada parte usa uma tabela específica.
-- **Salt opcional:** Itens aleatórios (determinísticos via seed) podem ser inseridos no ciphertext para elevar a entropia e ofuscação. As posições do salt são codificadas na chave.
-- **Chave compacta:** A chave gerada guarda comprimentos, passes, seed, e metadados de salt/padding, permitindo a descriptografia completa.
+- **Salt opcional:** Itens aleatórios (determinísticos via seed) podem ser inseridos no ciphertext para aumentar entropia e ofuscação. As posições do salt são codificadas na chave.
+- **Chave compacta:** A chave gerada armazena comprimentos, passes, seed e metadados de salt/padding, permitindo a descriptografia completa.
 
-## ✨ Características
+## Características
 
-- 🔐 Criptografia determinística baseada em seed
-- 🔑 Geração automática de chaves compactas
-- 🧂 Suporte opcional a salt para maior segurança
-- 📦 Compressão de texto binário integrada
-- 🖥️ Interface de linha de comando completa
-- 🎨 Interface gráfica moderna (CustomTkinter)
-- 🌐 Interface web (Flask)
-- 📱 Executável standalone (.exe) para Windows
-- 🧪 Testes unitários completos
-- 📚 Documentação detalhada
+- Criptografia determinística baseada em seed
+- Geração automática de chaves compactas
+- Suporte opcional a salt
+- Compressão de texto binário integrada
+- Interface de linha de comando
+- Interface gráfica (CustomTkinter)
+- Interface web (Flask)
+- Executável standalone (.exe) para Windows
+- Testes unitários
+- Documentação
 
-## 📦 Requisitos
+## Requisitos
 
-- **Python 3.8+** (testado em Python 3.11 e 3.13)
-- **Bibliotecas externas:**
+- Python 3.8+ (testado em Python 3.11 e 3.13)
+- Bibliotecas externas:
   - `customtkinter >= 5.2.0` (para interface gráfica)
   - `flask >= 2.3.0` (para interface web, opcional)
   - `pyinstaller >= 5.13.0` (para construir executável, opcional)
 
-## 🚀 Instalação
+## Instalação
 
 ### 1. Clonar o repositório
 
@@ -68,10 +61,12 @@ cd HashChain---encryption
 ### 2. Instalar dependências
 
 ```bash
-# Instalar todas as dependências
 pip install -r hashchain/Libraries/requirements.txt
+```
 
-# Ou instalar manualmente
+Ou instalar manualmente:
+
+```bash
 pip install customtkinter flask pyinstaller
 ```
 
@@ -81,40 +76,31 @@ pip install customtkinter flask pyinstaller
 python main.py
 ```
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 HashChain---encryption/
 ├── hashchain/                    # Pacote principal
-│   ├── __init__.py              # Exporta classe HashChain
+│   ├── __init__.py
 │   ├── hashchain.py             # Classe principal HashChain
 │   ├── core/                    # Módulos principais
-│   │   ├── __init__.py
 │   │   ├── compression.py       # Compressão/Descompressão
 │   │   ├── encryption.py        # Criptografia
 │   │   ├── decryption.py        # Descriptografia
 │   │   └── key_generator.py     # Geração de chaves
 │   ├── tables/                  # Geração de tabelas
-│   │   ├── __init__.py
 │   │   └── table_generator.py   # Gerador de tabelas determinísticas
 │   ├── utils/                   # Utilitários
-│   │   ├── __init__.py
 │   │   ├── colors.py            # Formatação de cores no terminal
 │   │   ├── handler.py           # Operações de sistema e arquivos
 │   │   └── input_collector.py   # Coleta de inputs do usuário
 │   ├── config/                  # Configuração
-│   │   ├── __init__.py
-│   │   └── config_manager.py    # Gerenciador de configuração
-│   ├── interfaces/              # Interfaces de usuário
-│   │   ├── __init__.py
-│   │   ├── gui.py               # Interface gráfica (CustomTkinter)
-│   │   └── web/                 # Interface web
-│   │       ├── __init__.py
-│   │       ├── app.py           # Aplicação Flask
-│   │       └── templates/       # Templates HTML
-│   │           └── index.html
-│   └── Libraries/
-│       └── requirements.txt     # Dependências do projeto
+│   │   └── config_manager.py   # Gerenciador de configuração
+│   └── interfaces/              # Interfaces de usuário
+│       ├── gui.py               # Interface gráfica (CustomTkinter)
+│       └── web/                 # Interface web
+│           ├── app.py           # Aplicação Flask
+│           └── templates/      # Templates HTML
 ├── build/                       # Ferramentas de build
 │   ├── build_exe.py             # Script para executável completo
 │   ├── build_exe_gui.py         # Script para executável GUI
@@ -126,7 +112,7 @@ HashChain---encryption/
 └── README.md                    # Este arquivo
 ```
 
-## 💻 Uso
+## Uso
 
 ### Interface de Linha de Comando (CLI)
 
@@ -138,22 +124,6 @@ python main.py
 
 O programa oferece um menu interativo com as seguintes opções:
 
-1. **Criptografar Texto** - Criptografa texto com opções de seed, passes e salt
-2. **Descriptografar Texto** - Descriptografa usando ciphertext e chave
-3. **Comprimir Texto** - Comprime texto binário (0 e 1)
-4. **Descomprimir Texto** - Descomprime texto comprimido
-5. **Interface Web** - Inicia servidor web local
-6. **Ajuda** - Mostra informações de ajuda
-7. **Sair** - Encerra o programa
-
-#### Exemplo de uso no terminal:
-
-```
-Bem-vindo ao sistema de criptografia HashChain.
-
-Deseja usar a interface gráfica? Caso contrário o modo terminal será utilizado. (s/n): n
-
-Escolha uma ação:
 1. Criptografar Texto
 2. Descriptografar Texto
 3. Comprimir Texto
@@ -161,9 +131,6 @@ Escolha uma ação:
 5. Interface Web
 6. Ajuda
 7. Sair
-
-Digite o número da ação desejada: 1
-```
 
 ### Interface Gráfica (GUI)
 
@@ -181,13 +148,6 @@ from hashchain.interfaces import run
 run()
 ```
 
-A interface gráfica oferece:
-- ✅ Criptografia com opções visuais
-- ✅ Descriptografia intuitiva
-- ✅ Compressão/Descompressão
-- ✅ Visualização de resultados
-- ✅ Salvamento de arquivos
-
 ### Interface Web
 
 Para iniciar a interface web:
@@ -204,13 +164,7 @@ from hashchain.interfaces import run_web
 run_web(host='127.0.0.1', port=5000)
 ```
 
-A interface web estará disponível em `http://127.0.0.1:5000` no seu navegador.
-
-**Recursos da interface web:**
-- 🌐 Acessível via navegador
-- 📱 Interface responsiva
-- 🔐 Todas as funcionalidades disponíveis
-- 🎨 Interface moderna e intuitiva
+A interface web estará disponível em `http://127.0.0.1:5000`.
 
 ### Uso Programático
 
@@ -219,10 +173,8 @@ A interface web estará disponível em `http://127.0.0.1:5000` no seu navegador.
 ```python
 from hashchain import HashChain
 
-# Criar instância
 hc = HashChain()
 
-# Criptografar
 hc.encrypt(
     plaintext="Mensagem secreta",
     seed=12345678901234567890,
@@ -230,13 +182,11 @@ hc.encrypt(
     no_salt=False,
 )
 
-# Obter resultados
-ciphertext = hc.info(0)  # texto comprimido
-key = hc.info(1)         # chave
+ciphertext = hc.info(0)
+key = hc.info(1)
 
-# Descriptografar
 hc.decrypt(ciphertext=ciphertext, key=key)
-plaintext = hc.info(3)   # texto descriptografado
+plaintext = hc.info(3)
 
 print(f"Ciphertext: {ciphertext}")
 print(f"Key: {key}")
@@ -250,20 +200,18 @@ from hashchain import HashChain
 
 hc = HashChain()
 
-# Criptografar e obter resultado diretamente
 result = hc.encrypt(
     plaintext="Hello, HashChain!",
     seed=98765432109876543210,
     pass_=[20, 25, 30],
     no_salt=True,
-    retonar=True,  # Retorna [ciphertext, key]
+    retonar=True,
 )
 
 ciphertext, key = result
 print(f"Ciphertext: {ciphertext}")
 print(f"Key: {key}")
 
-# Descriptografar
 hc.decrypt(ciphertext=ciphertext, key=key)
 plaintext = hc.info(3)
 print(f"Plaintext: {plaintext}")
@@ -276,49 +224,51 @@ from hashchain import HashChain
 
 hc = HashChain()
 
-# Comprimir texto binário
 texto_binario = "1010101010101010"
 hc.compression(texto_binario)
 comprimido = hc.info(4)
 print(f"Comprimido: {comprimido}")
 
-# Descomprimir
 hc.decompression(comprimido)
 descomprimido = hc.info(5)
 print(f"Descomprimido: {descomprimido}")
 ```
 
-## 🔑 Conceitos-Chave
+## Conceitos-Chave
 
 ### Passes (`pass_`)
+
 Lista de inteiros (3 dígitos na chave) que define como o ciphertext é segmentado e qual tabela usar por segmento. Cada número representa o tamanho de um segmento.
 
-**Exemplo:**
+Exemplo:
 ```python
 pass_ = [25, 30, 18]  # Primeiro segmento: 25 caracteres, segundo: 30, terceiro: 18
 ```
 
 ### Seed Principal (`seed`)
+
 Inteiro decimal que determina todas as seeds derivadas por passe e pelo salting. A mesma seed sempre produz os mesmos resultados.
 
-**Exemplo:**
+Exemplo:
 ```python
-seed = 12345678901234567890  # Seed longa para maior segurança
+seed = 12345678901234567890
 ```
 
 ### Salt (Opcional)
+
 Strings inseridas em posições pseudoaleatórias, com base no `seed`. As posições e metadados são codificados na chave. Aumenta a entropia e dificulta análise.
 
-**Uso:**
+Uso:
 ```python
-no_salt=False  # Usa salt (padrão, mais seguro)
-no_salt=True   # Não usa salt (mais rápido, menos seguro)
+no_salt=False  # Usa salt (padrão)
+no_salt=True   # Não usa salt
 ```
 
 ### Padding (Opcional)
-Número de caracteres '1' adicionados ao final do ciphertext para adequar o comprimento quando necessário. A quantidade é guardada na chave.
 
-## 📚 API Completa
+Número de caracteres '1' adicionados ao final do ciphertext para adequar o comprimento quando necessário. A quantidade é armazenada na chave.
+
+## API Completa
 
 ### Classe `HashChain`
 
@@ -396,9 +346,9 @@ Imprime informações armazenadas.
 **Parâmetros:**
 - `output` (int | str): Índice ou alias (mesmos valores de `info()`)
 
-## 🔐 Formato da Chave
+## Formato da Chave
 
-A chave "polida" concatena campos em sequência. As seções variam conforme o uso de salt.
+A chave concatena campos em sequência. As seções variam conforme o uso de salt.
 
 ### Com Salt
 
@@ -424,14 +374,14 @@ A chave "polida" concatena campos em sequência. As seções variam conforme o u
 
 Não inclui `lol_salt`, `salt_l` e `posicoes`.
 
-## 🛠️ Construindo o Executável
+## Construindo o Executável
 
 Para criar um executável `.exe` do HashChain:
 
-### Método 1: Script Automatizado (Recomendado)
+### Método 1: Script Automatizado
 
 ```bash
-# Versão GUI (recomendado - sempre abre a interface gráfica)
+# Versão GUI (recomendado)
 python build/build_exe_gui.py
 
 # Versão completa (terminal + GUI)
@@ -453,9 +403,9 @@ pyinstaller HashChain.spec
 pyinstaller --name=HashChain --onefile --windowed --clean main.py
 ```
 
-**Para mais detalhes, consulte:** `build/BUILD.md`
+Para mais detalhes, consulte `build/BUILD.md`.
 
-## ⚙️ Configuração
+## Configuração
 
 O arquivo `config.json` armazena configurações do programa:
 
@@ -476,19 +426,19 @@ O arquivo `config.json` armazena configurações do programa:
 - `terminal_mode`: Se `true`, inicia em modo terminal; se `false`, inicia GUI
 - `params`: Parâmetros padrão de criptografia
 
-## 💡 Boas Práticas
+## Boas Práticas
 
-1. **Guarde sua chave com segurança:** A chave contém tudo necessário para descriptografar
-2. **Use seeds longas:** Para maior variabilidade e segurança
-3. **Use salt quando possível:** Aumenta a segurança (padrão: `no_salt=False`)
-4. **Validação de parâmetros:**
+1. Guarde sua chave com segurança. A chave contém tudo necessário para descriptografar.
+2. Use seeds longas para maior variabilidade e segurança.
+3. Use salt quando possível. Aumenta a segurança (padrão: `no_salt=False`).
+4. Validação de parâmetros:
    - `min_table_leng` não deve ser menor que 20
    - `max_table_leng` não deve exceder 999
-5. **Cópia de saída colorida:** O `decrypt()` remove automaticamente sequências ANSI se você copiar ciphertext/key de uma saída colorida
+5. Se copiar ciphertext/key de uma saída colorida, o `decrypt()` remove automaticamente sequências ANSI.
 
-## 🤝 Contribuindo
+## Contribuindo
 
-Contribuições são bem-vindas! Por favor:
+Contribuições são bem-vindas. Por favor:
 
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
@@ -503,17 +453,13 @@ Contribuições são bem-vindas! Por favor:
 - Adicione testes para novas funcionalidades
 - Documente funções e classes
 
-## 📄 Licença
+## Licença
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo LICENSE para detalhes.
+Este projeto está licenciado sob a Licença MIT.
 
-## 📞 Suporte
+## Suporte
 
 Para questões, problemas ou sugestões:
 - Abra uma issue no GitHub
 - Consulte a documentação em `hashchain/DOC/ESTRUTURA.md`
 - Veja exemplos em `main.py`
-
----
-
-**Desenvolvido com ❤️ usando Python**
