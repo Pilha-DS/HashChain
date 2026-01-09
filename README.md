@@ -45,7 +45,7 @@ HashChain Encryption utiliza:
 
 - Python 3.8+ (testado em Python 3.11 e 3.13)
 - Bibliotecas externas:
-  - `customtkinter >= 5.2.0` (para interface gráfica)
+  - `customtkinter >= 5.2.0` (para interface gráfica, opcionala)
   - `flask >= 2.3.0` (para interface web, opcional)
   - `pyinstaller >= 5.13.0` (para construir executável, opcional)
 
@@ -70,7 +70,7 @@ Ou instalar manualmente:
 pip install customtkinter flask pyinstaller
 ```
 
-### 3. Verificar instalação
+### 3. Modos de uso via comando
 
 ```bash
 python main.py
@@ -102,12 +102,13 @@ HashChain---encryption/
 │           ├── app.py           # Aplicação Flask
 │           └── templates/      # Templates HTML
 ├── build/                       # Ferramentas de build
-│   ├── build_exe.py             # Script para executável completo
-│   ├── build_exe_gui.py         # Script para executável GUI
+│   ├── build_exe.py             # Script para executável completo (desuso)
+│   ├── build_exe_gui.py         # Script para executável GUI (recomendado)
 │   ├── main_gui.py             # Ponto de entrada GUI
 │   ├── HashChain.spec          # Especificação PyInstaller
 │   └── BUILD.md                # Documentação de build
 ├── main.py                      # Script principal (CLI)
+├── HashChain.exe                # executavel
 ├── config.json                  # Arquivo de configuração
 └── README.md                    # Este arquivo
 ```
@@ -238,7 +239,7 @@ print(f"Descomprimido: {descomprimido}")
 
 ### Passes (`pass_`)
 
-Lista de inteiros (3 dígitos na chave) que define como o ciphertext é segmentado e qual tabela usar por segmento. Cada número representa o tamanho de um segmento.
+Lista de inteiros (maximo de 3 dígitos na chave) que define como o ciphertext é segmentado e qual tabela usar por segmento. Cada número representa o tamanho de um segmento.
 
 Exemplo:
 ```python
@@ -442,9 +443,7 @@ Contribuições são bem-vindas. Por favor:
 
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+3. Abra um Pull Request
 
 ### Padrões de Código
 
@@ -463,3 +462,4 @@ Para questões, problemas ou sugestões:
 - Abra uma issue no GitHub
 - Consulte a documentação em `hashchain/DOC/ESTRUTURA.md`
 - Veja exemplos em `main.py`
+- Não podemos nos resposabilizar pelo uso do projeto, use com cuidado e faça seus testes
