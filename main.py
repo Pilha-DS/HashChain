@@ -4,11 +4,25 @@ import json
 import secrets
 import datetime
 import subprocess
+import sys
 from pathlib import Path
 
 from hashchain import HashChain
 from hashchain.utils import Handler, InputCollector, ColorFormatter
 from hashchain.config import ConfigManager
+
+# Detecta se está rodando como executável PyInstaller
+def is_frozen():
+    """Verifica se está rodando como executável PyInstaller."""
+    return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
+
+# Verifica se tem console disponível
+def has_console():
+    """Verifica se há console disponível (sys.stdin)."""
+    try:
+        return sys.stdin.isatty() if sys.stdin else False
+    except (AttributeError, RuntimeError):
+        return False
 
 # Global use.
 hashchain = HashChain()
@@ -60,6 +74,21 @@ def main():
     """Função principal."""
     global has_dependencies, config
     
+    # Se for executável sem console, tenta abrir GUI diretamente
+    if is_frozen() and not has_console():
+        try:
+            from hashchain.interfaces import run
+            run()
+            return
+        except Exception as e:
+            # Se falhar, tenta mostrar mensagem de erro em diálogo
+            try:
+                import tkinter.messagebox as mb
+                mb.showerror("Erro", f"Não foi possível iniciar a interface gráfica.\n\nErro: {e}")
+            except:
+                pass
+            return
+    
     print(f"\nBem-vindo ao sistema de criptografia {bold}HashChain.{r}\n "
           f"{italic}- Para {bold}usar a interface{r}{italic} você deve ter as bibliotecas "
           f"{r}{bold}tkinter{r}{italic} e {r}{bold}customtkinter{r}{italic} instaladas.{r}")
@@ -75,11 +104,22 @@ def main():
     while Stable:
         if config.get("terminal_mode", True):
             while Stable:
-                terminal_mode_input = input(
-                    f"\n{color.c('c', True)}Deseja usar a interface gráfica? "
-                    f"Caso contrário o modo terminal será utilizado. "
-                    f"{r}{color.c('w', bold=True)}(s/n){r}: "
-                ).strip().lower()
+                try:
+                    terminal_mode_input = input(
+                        f"\n{color.c('c', True)}Deseja usar a interface gráfica? "
+                        f"Caso contrário o modo terminal será utilizado. "
+                        f"{r}{color.c('w', bold=True)}(s/n){r}: "
+                    ).strip().lower()
+                except (RuntimeError, EOFError):
+                    # Se não houver console, tenta abrir GUI diretamente
+                    if not has_console():
+                        try:
+                            from hashchain.interfaces import run
+                            run()
+                            return
+                        except:
+                            pass
+                    return
                 
                 check_action(terminal_mode_input)
                 

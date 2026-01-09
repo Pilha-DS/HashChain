@@ -9,3 +9,7 @@ customtkinter>=5.2.0
 # Se não for usar a interface web, esta dependência pode ser ignorada
 flask>=2.3.0
 
+# Para construir o executável (.exe)
+pyinstaller>=5.13.0
+
+
